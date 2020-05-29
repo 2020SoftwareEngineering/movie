@@ -1,0 +1,7 @@
+[2020-05-12 17:19:29 +0800] [31253] [INFO] Starting gunicorn 19.9.0
+[2020-05-12 17:19:29 +0800] [31253] [INFO] Listening at: http://127.0.0.1:8003 (31253)
+[2020-05-12 17:19:29 +0800] [31253] [INFO] Using worker: sync
+[2020-05-12 17:19:29 +0800] [31258] [INFO] Booting worker with pid: 31258
+[2020-05-12 17:20:16 +0800] [31253] [INFO] Handling signal: int
+[2020-05-12 17:20:16 +0800] [31258] [INFO] Worker exiting (pid: 31258)
+[2020-05-12 17:20:17 +0800] [31253] [INFO] Shutting down: Master

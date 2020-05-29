@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block right-panel-content %}
+    <h1 align="center">个人信息</h1>
+    <div class="container-fluid">
+        <form action="{% url 'personal' %}" method='post' autocomplete="on">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field.errors }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="reset" class="btn-lg btn-block btn-danger ">重置<span
+                            class="glyphicon glyphicon-remove"></span></button>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn-lg btn-success btn-block">修改信息<span
+                            class="glyphicon glyphicon-ok"></span></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row mt-10">
+        <div class="col-md-4">
+            <h2><a style="padding: 20px; font-size: 30px" class="btn-lg btn-block btn-warning"
+                   href="{% url 'mycollect' %}">我的收藏</a>
+            </h2></div>
+        <div class="col-md-4">
+            <h2><a style="padding: 20px; font-size: 30px" class="btn-lg btn-block btn-info"
+                   href="{% url 'my_comments' %}">我的评论</a>
+            </h2>
+        </div>
+        <div class="col-md-4">
+            <h2><a style="padding: 20px; font-size: 30px" class="btn-lg btn-block btn-primary "
+                   href="{% url 'my_rate' %}">我的评分</a>
+            </h2>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block right-panel-content %}
+    <h1 align="center">标签</h1>
+    {% for tag in tags %}
+        <div class="col-md-1" style="margin-top: 15px">
+            <a class="tags-input h2" href="{% url 'one_tag' tag.id %}"><span
+                    class="label label-primary">{{ tag.name }}</span> </a>
+        </div>
+    {% endfor %}
+{% endblock %}

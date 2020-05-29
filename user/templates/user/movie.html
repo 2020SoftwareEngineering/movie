@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load grav_tag %}
+{% load is_like %}
+{% block right-panel-content %}
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-md-2 column">
+                <img class="img-thumbnail movie-image" alt="140x140" src="/media/{{ movie.pic }}" width=140px
+                     height=140px/></div>
+            <div class="col-md-10 column">
+                <ol class="list-unstyled">
+                    <li>
+                        <h2>{{ movie.name }}    </h2>
+                    </li>
+                    <li>
+                        <p> 导演:{{ movie.director }}</p>
+
+                    </li>
+                    <li>
+
+                        {% if movie.tags.all %}
+                            <p>
+                            标签:
+                            {% for tag in movie.tags.all %}
+                                {{ tag }}
+                            {% endfor %}
+                        {% else %}
+                            无
+                        {% endif %}
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            描述:{{ movie.intro }}
+
+                        </p>
+                    </li>
+                    <li>
+                        <p> 豆瓣评分:{{ movie.d_rate }}
+                        </p>
+                    </li>
+                    <li>
+                        网站评分:
+                        {% if movie_rate %}
+                            {{ movie_rate |floatformat:2 }}
+                        {% else %}
+                            无
+                        {% endif %}
+                    </li>
+                    {% if user_rate is not None %}
+                        <h4>您已经进行打分: {{ user_rate.mark }}</h4>
+                    {% else %}
+                        <li>
+                            <form action="{% url 'score' movie.id %}" method="post">
+                                {% csrf_token %}
+                                <p>添加评分</p>
+                                <select name="score">
+                                    <option>1.0</option>
+                                    <option>2.0</option>
+                                    <option>3.0</option>
+                                    <option>4.0</option>
+                                    <option>5.0</option>
+                                </select>
+                                <button type="submit" class="btn btn-default">提交</button>
+                            </form>
+                        </li>
+
+                    {% endif %}
+                    <li>
+                        <p> 评分人数:{{ movie.rate_set.count }}
+                        </p>
+                    </li>
+                    <li>
+                        <p> 收藏人数:{{ movie.collect.count }} {% if is_collect %}
+                            <a class="btn btn-warning" style="padding-bottom: 10px; margin-left: 10px"
+                               href="{% url 'decollect' movie.id %}">取消收藏</a>
+                        {% else %}
+                            <a class="btn btn-success" style="padding-bottom: 10px; margin-left: 10px"
+                               href="{% url 'collect' movie.id %}">点击收藏</a>{% endif %}
+                        </p>
+                    </li>
+                    <li>
+{#                        <div class="bdsharebuttonbox">#}
+{#                            <p>分享到:</p>#}
+{#                            <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>#}
+{#                            <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>#}
+{#                            <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>#}
+{#                            <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>#}
+{#                            <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>#}
+{#                            <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>#}
+{#                            <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>#}
+{#                        </div>#}
+                        <script>window._bd_share_config = {
+                            "common": {
+                                "bdSnsKey": {},
+                                "bdText": "",
+                                "bdMini": "1",
+                                "bdMiniList": false,
+                                "bdPic": "",
+                                "bdStyle": "1",
+                                "bdSize": "24"
+                            }, "share": {}
+                        };
+                        with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="row">
+                <div class="col-md-9">
+                    <form role="form" action="{% url 'comment' movie.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input placeholder="快来说说点什么吧" class="form-control" name="comment" cols="10" rows="10">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" style="float: right;" class="btn btn-success">提交评论</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="row">
+                    <div class="col-md-9">
+                        <h2 style="border-bottom: dashed #a5a5a5 1px; padding-bottom: 10px">评论</h2>
+                        <div class="item-list">
+                            <ul>
+                                {% for i in comments %}
+                                    <li class="list-item">
+                                        <div class="avartar"><a>
+                                            <img src='{{ request.user.email|gravatar:"75" }}'> </a>
+                                        </div>
+                                        <div class="list-info">
+                                            <p>{{ i.content }}</p>
+                                            {{ i.user.name }} 发表于{{ i.create_time }} 推荐
+                                        </div>
+                                        {#                                    已点赞#}
+                                        {% if  i.id|is_like:i.user.id %}
+                                            <a href="{% url 'unlike_comment' i.id movie.id %}"
+                                               class="recommend-link"><span class="fa fa-lg fa-thumbs-up"
+                                                                            style="color: orange">({{ i.likecomment_set.count }})</span></a>
+                                        {% else %}
+                                            <a href="{% url 'like_comment' i.id movie.id %}"
+                                               class="recommend-link"><span
+                                                    class="fa fa-lg fa-thumbs-up">({{ i.likecomment_set.count }})</span></a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

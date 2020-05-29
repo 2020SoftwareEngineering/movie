@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="115.29.191.175" id="1e5d9aeb-8a0f-4192-9449-5e93fe16a141" port="22" customName="tencent" nameFormat="CUSTOM" username="ubuntu" />
+      <sshConfig authType="PASSWORD" host="115.29.191.175" id="333edba2-a4c7-4418-9ba3-a7dacdefec08" port="22" customName="tencent" nameFormat="CUSTOM" />
+      <sshConfig authType="PASSWORD" host="115.29.191.175" id="3d2930b8-0bf5-43f5-846f-2f0be75122d2" port="22" customName="tencent" nameFormat="CUSTOM" />
+      <sshConfig authType="PASSWORD" host="115.29.191.175" id="f3ba24d3-d2a7-4ad6-91ea-738f13eaf707" port="22" customName="tencent" nameFormat="CUSTOM" />
+      <sshConfig authType="PASSWORD" host="115.29.191.175" id="a7a9fe53-9176-497e-9beb-e59c1c62d44d" port="22" customName="tencent" nameFormat="CUSTOM" />
+    </configs>
+  </component>
+</project>

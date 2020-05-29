@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+{% load static %}
+<!-- saved from url=(0041)http://v3.bootcss.com/examples/dashboard/ -->
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/movies.png">
+    <title>电影推荐系统</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+{#    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">#}
+    {#    <link href="/static/css/bootstrap.min.css" rel="stylesheet">#}
+    <!-- Custom styles for this template -->
+    <link href="{% static '/css/dashboard.css' %}" rel="stylesheet">
+    <link href="{% static '/css/custom.css' %}" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+          crossorigin="anonymous">
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <link href="{% static '/js/ie-emulation-modes-warning.js' %} " rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="{% static "/js/baidu_statistic.js" %}"></script>
+</head>
+<body background="{% static '/bg.png' %}">
+<nav class="navbar  navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">电影推荐</a>
+            <button type="button" id="sidebar-control" class="navbar-toggle collapsed" data-target="#sidebar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse " aria-expanded="true">
+            <ul class="nav navbar-nav navbar-right nav-pills">
+                {% if request.session.login_in == True %}
+                    <li><a href="{% url 'personal' %}">{{ request.session.name }}</a></li>
+                    <li><a href="{% url 'logout' %}">退出</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">登录</a></li>
+                    <li><a href="{% url 'register' %}">注册</a></li>
+                {% endif %}
+            </ul>
+            <form class="navbar-form navbar-right" action="{% url 'search' %}" method='post'>
+                {% csrf_token %}
+                <input type="text" class="form-control" name="search" placeholder="输入关键字">
+                <button class="btn btn-default" type="submit">查询</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2 col-md-1 col-md-offset-1  sidebar" id="sidebar" style="background-color: rgba(255,255,255,0.5)">
+            <ul class="sidenav nav nav-sidebar navbar-collapse">
+                <li class="active"><a href="{% url 'all_movie' %}">所有影片<span class="sr-only">(current)</span></a></li>
+                <li><a href="{% url 'most_view' %}">按浏览量</a></li>
+                <li><a href="{% url 'most_mark' %}">按评分量</a></li>
+                <li><a href="{% url 'hot_movie' %}">按收藏量</a></li>
+                <li><a href="{% url 'mark_sort' %}">评分排序</a></li>
+{#                <li><a href="{% url 'latest_movie' %}">新增电影</a></li>#}
+                <li><a href="{% url 'all_tags' %}">分类标签</a></li>
+                <li><a href="{% url 'user_recommend' %}">基于用户推荐</a></li>
+                <li><a href="{% url 'item_recommend' %}">基于物品推荐</a></li>
+                {#                                <li><a href="{% url 'als_recommend' %}">als推荐</a></li>#}
+                <li><a href="{% url 'personal' %}">个人信息</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2 main ">
+            {% if message %}
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div id="myAlert" class="alert alert-warning">
+                            <a href="#" class="close" data-dismiss="alert">
+                                &times;
+                            </a>
+                            <strong>{{ message }}</strong>
+                        </div>
+
+                    </div>
+                </div>
+            {% endif %}
+            {% block right-panel-content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% if ENV == 'production' %}
+    <!-- Footer -->
+    <div class="row">
+        <footer class="page-footer font-small unique-color-dark pt-4">
+            <!-- Footer Elements -->
+            <div class="container">
+                <!-- Call to action -->
+                <ul class="list-unstyled text-center">
+                </ul>
+            </div>
+        </footer>
+    </div>
+{% endif %}
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static "/js/jquery-2.1.1.min.js" %}"></script>
+<script src="{% static "/js/bootstrap.min.js" %}"></script>
+{#<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>#}
+{#<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>#}
+{#<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>#}
+<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="{% static "/js/ie10-viewport-bug-workaround.js" %}"></script>
+<script src="{% static '/js/custom.js' %}"></script>
+<script src="{% static "/js/plugins/highstock/js/highstock.js" %}"></script>
+<script src="{% static "/js/plugins/highstock/js/modules/exporting.js" %}"></script>
+{% block bottom-js %}
+    <!--put your own js here in your page -->
+
+    <script>
+        $(function () {
+
+　　$(".sidenav").find("li").each(function () {
+
+　　　　var a = $(this).find("a:first")[0];
+
+　　　　 if ($(a).attr("href") === location.pathname) {
+
+　　　　　　$(this).addClass("active");
+
+　　　　} else {
+
+　　　　　　 $(this).removeClass("active");
+
+　　　　}
+
+　　});
+
+})
+
+        $('#sidebar-control').click(
+            function () {
+                $('#sidebar').toggle();
+                $('.main').toggleClass('col-xs-offset-5');
+            }
+        );
+
+    </script>
+{% endblock %}
+
+</body>
+</html>

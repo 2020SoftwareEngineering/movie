@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block right-panel-content %}
+    <h3 class="text-center">{{ title }}</h3>
+    {% if  not movies %}
+        <h3 class="text-center">此处无电影</h3>
+    {% endif %}
+
+    {% for movie in movies %}
+
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-md-3 column">
+                    <img class="img-thumbnail movie-image" alt="140x140" src="/media/{{ movie.pic }}" width=140px
+                         height=140px/>
+                </div>
+                <div class="col-md-6 column">
+                    <h3>
+                        <a href="{% url 'movie' movie.id %}">    {{ movie.name }}</a>
+                    </h3>
+                    <p>{{ movie.intro | slice:":100" }}......</p>
+                    <p>导演:{{ movie.director }}</p>
+                    <p>主演:{{ movie.leader }}</p>
+                    <p>年代:{{ movie.years }}</p>
+                    <p>豆瓣评分:{{ movie.d_rate }}</p>
+                    <p>浏览量:{{ movie.num }} / 收藏量:{{ movie.collect.count }} / 评分量: {{ movie.rate_set.count }}</p>
+                    <p>网站评分: {{ movie.movie_rate }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="container-fluid">
+    <div class="col-md-9 col-md-offset-1">
+        {% if movies.has_other_pages %}
+            <ul class="pagination">
+                {% if movies.has_previous %}
+                    <li><a href="?page={{ movies.previous_page_number }}">上一页</a></li>
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for l in  movies.paginator.page_range %}
+                    {% if l <= movies.number|add:5 and l >= movies.number|add:-5 %}
+                        {% if movies.number == l %}
+                            <li class="active"><span>{{ l }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                            <li><a href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                <li class="item"><a href="#">
+                    {{ movies.number }}/{{ movies.paginator.num_pages }}</a>
+                </li>
+                {% if movies.has_next %}
+                    <li><a href="?page={{ movies.next_page_number }}">下一页</a></li>
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+        {#                分页结束#}
+    </div>
+{% endblock %}
